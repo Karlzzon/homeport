@@ -1,0 +1,3 @@
+#!/bin/sh
+# Blocks commits containing secrets or private IP addresses.
+exec gitleaks git --pre-commit --staged --redact --no-banner --config .gitleaks.toml
