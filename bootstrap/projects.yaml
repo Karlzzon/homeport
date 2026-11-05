@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  description: Platform components
+  sourceRepos:
+    - https://github.com/Karlzzon/homeport.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  description: Applications
+  sourceRepos:
+    - https://github.com/Karlzzon/homeport.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: '*'
+    - server: https://kubernetes.default.svc
+      namespace: '!kube-system'
+    - server: https://kubernetes.default.svc
+      namespace: '!argocd'
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace

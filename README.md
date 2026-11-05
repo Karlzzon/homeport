@@ -4,7 +4,7 @@ A k3s platform that runs on a laptop and is managed through GitOps. It can be to
 
 The name is a nautical nod to Kubernetes, Greek for "helmsman".
 
-> **Status:** Early development. The cluster runs, but no platform services are deployed yet.
+> **Status:** Early development. The cluster runs and Argo CD manages itself from this repository. No other platform services are deployed yet.
 
 ## Goals
 
@@ -24,12 +24,13 @@ The name is a nautical nod to Kubernetes, Greek for "helmsman".
 
 ## Quickstart
 
-Requires Docker, k3d, kubectl and `make`. See the [bootstrap runbook](docs/runbooks/bootstrap.md).
+Requires Docker, k3d, kubectl, Helm and `make`. See the [bootstrap runbook](docs/runbooks/bootstrap.md).
 
 ```bash
-make up       # create the cluster
-make status   # check nodes and pods
-make down     # delete the cluster
+make up          # create the cluster
+make bootstrap   # install Argo CD and hand over to GitOps
+make status      # check nodes and pods
+make down        # delete the cluster
 ```
 
 ## Documentation

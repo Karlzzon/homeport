@@ -1,7 +1,7 @@
 CLUSTER := homeport
 CONFIG := cluster/k3d.yaml
 
-.PHONY: up down status hooks
+.PHONY: up down status hooks bootstrap
 
 up:
 	k3d cluster create --config $(CONFIG)
@@ -17,3 +17,7 @@ status:
 
 hooks:
 	git config core.hooksPath .githooks
+
+bootstrap:
+	helm upgrade --install argocd platform/argocd --namespace argocd --create-namespace --dependency-update --wait --timeout 5m
+	kubectl apply -f bootstrap/root-app.yaml

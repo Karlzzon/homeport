@@ -1,0 +1,5 @@
+# Helm dependencies, rebuilt from the exact versions in Chart.yaml
+platform/*/charts/
+platform/*/Chart.lock
+apps/*/charts/
+apps/*/Chart.lock

@@ -1,5 +1,9 @@
 # Documentation
 
+## Architecture
+
+- [GitOps](architecture/gitops.md)
+
 ## Runbooks
 
 - [Bootstrap](runbooks/bootstrap.md)
