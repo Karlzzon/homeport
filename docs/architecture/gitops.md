@@ -104,7 +104,7 @@ There are two ApplicationSets for two reasons:
 | Namespaces | All | All except `kube-system` and `argocd` |
 | Cluster-scoped resources | All | `Namespace` only |
 
-The `root` application uses the built-in `default` project, because it creates the other projects.
+The `root` application uses the built-in `default` project, because it creates the other projects. The projects use sync wave `-1`, so they exist before the ApplicationSets that reference them.
 
 ## Constraints
 

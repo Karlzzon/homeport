@@ -3,6 +3,8 @@ kind: AppProject
 metadata:
   name: platform
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   description: Platform components
   sourceRepos:
@@ -19,6 +21,8 @@ kind: AppProject
 metadata:
   name: apps
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   description: Applications
   sourceRepos:
