@@ -111,6 +111,7 @@ The `root` application uses the built-in `default` project, because it creates t
 - The directory name must be a valid Kubernetes name, and unique across `platform/` and `apps/`.
 - Each directory gets a namespace with the same name.
 - Renaming a directory works as a removal followed by an addition. In `apps/`, the old resources are deleted.
+- Namespaces created by Argo CD are not removed with the application, for either ApplicationSet. An empty namespace stays until it is deleted by hand.
 - Manual changes to generated Applications are overwritten. Changes are made in Git.
 - Argo CD discovers new directories by polling Git, so a new application appears after a short delay.
 - Applications sync independently, with no ordering between them. A sync that fails, for example because a CRD does not exist yet, is retried with backoff.
