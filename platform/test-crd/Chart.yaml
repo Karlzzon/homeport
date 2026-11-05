@@ -1,5 +1,0 @@
-apiVersion: v2
-name: test-crd
-description: Temporary chart for testing GitOps behaviour
-type: application
-version: 0.1.0
