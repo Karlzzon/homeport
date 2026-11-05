@@ -34,6 +34,3 @@ spec:
       namespace: '!kube-system'
     - server: https://kubernetes.default.svc
       namespace: '!argocd'
-  clusterResourceWhitelist:
-    - group: ''
-      kind: Namespace
