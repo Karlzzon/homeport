@@ -32,7 +32,13 @@ Creates the cluster from nothing.
    make bootstrap
    ```
 
-4. Verify the result.
+4. Wait until every application is `Synced` and `Healthy`. Until then, some of them show `OutOfSync` or `Progressing`. Stop the command with `Ctrl+C`.
+
+   ```bash
+   kubectl get applications -n argocd -w
+   ```
+
+5. Verify the result.
 
    ```bash
    make status
@@ -44,7 +50,7 @@ Creates the cluster from nothing.
 
    All three nodes should be `Ready`, and all pods `Running` or `Completed`. The applications `root`, `argocd`, `gateway-api-crds` and `traefik` should be `Synced` and `Healthy`. The `kubectl get crd` command should list ten CRDs, and the gateway `traefik-gateway` should be `Programmed`. The `curl` command should return `404` from Traefik, because no routes exist yet.
 
-5. Optional: open the Argo CD web interface at <https://127.0.0.1:8080>. The certificate is self-signed. Log in as `admin` with the generated password.
+6. Optional: open the Argo CD web interface at <https://127.0.0.1:8080>. The certificate is self-signed. Log in as `admin` with the generated password.
 
    ```bash
    kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d

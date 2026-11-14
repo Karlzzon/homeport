@@ -23,3 +23,4 @@ Significant decisions are recorded as Architecture Decision Records in [`adr/`](
 | [0006](adr/0006-use-make-as-task-runner.md) | Use Make as task runner |
 | [0007](adr/0007-pin-k3s-to-the-newest-commonly-supported-version.md) | Pin k3s to the newest commonly supported version |
 | [0008](adr/0008-deploy-components-and-shared-crds-with-applicationsets.md) | Deploy components and shared CRDs with ApplicationSets |
+| [0009](adr/0009-route-traffic-with-gateway-api-and-traefik.md) | Route traffic with Gateway API and Traefik |
