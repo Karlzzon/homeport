@@ -33,11 +33,11 @@ spec:
           prune: true
           selfHeal: true
         retry:
-          limit: 5
+          limit: 10
           backoff:
             duration: 10s
             factor: 2
-            maxDuration: 3m
+            maxDuration: 1m
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=true
@@ -75,11 +75,11 @@ spec:
           prune: true
           selfHeal: true
         retry:
-          limit: 5
+          limit: 10
           backoff:
             duration: 10s
             factor: 2
-            maxDuration: 3m
+            maxDuration: 1m
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=true
@@ -116,10 +116,10 @@ spec:
           prune: false
           selfHeal: true
         retry:
-          limit: 5
+          limit: 10
           backoff:
             duration: 10s
             factor: 2
-            maxDuration: 3m
+            maxDuration: 1m
         syncOptions:
           - ServerSideApply=true
