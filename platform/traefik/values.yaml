@@ -1,0 +1,15 @@
+traefik:
+  providers:
+    kubernetesGateway:
+      enabled: true
+    kubernetesIngress:
+      enabled: false
+    kubernetesCRD:
+      enabled: false
+  ingressClass:
+    enabled: false
+  gateway:
+    listeners:
+      web:
+        namespacePolicy:
+          from: All

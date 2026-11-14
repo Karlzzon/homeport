@@ -4,7 +4,7 @@ A k3s platform that runs on a laptop and is managed through GitOps. It can be to
 
 The name is a nautical nod to Kubernetes, Greek for "helmsman".
 
-> **Status:** Early development. The cluster runs and Argo CD manages itself from this repository. No other platform services are deployed yet.
+> **Status:** Early development. The cluster runs, Argo CD manages itself from this repository, and Traefik accepts Gateway API routes over HTTP. TLS and other platform services are not deployed yet.
 
 ## Goals
 
@@ -19,7 +19,7 @@ The name is a nautical nod to Kubernetes, Greek for "helmsman".
 | Kubernetes distribution | [k3s](https://k3s.io/) |
 | Local cluster runtime | [k3d](https://k3d.io/) |
 | GitOps | [Argo CD](https://argo-cd.readthedocs.io/) |
-| Traffic routing | [Gateway API](https://gateway-api.sigs.k8s.io/) |
+| Traffic routing | [Gateway API](https://gateway-api.sigs.k8s.io/) with [Traefik](https://doc.traefik.io/traefik/) |
 | Secret scanning | [gitleaks](https://github.com/gitleaks/gitleaks) |
 
 ## Quickstart
