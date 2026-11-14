@@ -37,9 +37,10 @@ Creates the cluster from nothing.
    ```bash
    make status
    kubectl get applications -n argocd
+   kubectl get crd | grep gateway.networking.k8s.io
    ```
 
-   All three nodes should be `Ready`, and all pods `Running` or `Completed`. The applications `root` and `argocd` should be `Synced` and `Healthy`.
+   All three nodes should be `Ready`, and all pods `Running` or `Completed`. The applications `root`, `argocd` and `gateway-api-crds` should be `Synced` and `Healthy`. The last command should list ten CRDs.
 
    Ports 80 and 443 do not answer yet. The Traefik bundled with k3s is disabled in `cluster/k3d.yaml`, and no replacement is installed.
 

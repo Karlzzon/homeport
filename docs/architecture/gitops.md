@@ -14,16 +14,18 @@ flowchart LR
         bootstrapdir["bootstrap/"]
         platformdir["platform/"]
         appsdir["apps/"]
+        crdsdir["crds/"]
     end
 
     subgraph argocd["Argo CD"]
         root["Application: root"]
-        appsets["ApplicationSets<br/>platform, apps"]
+        appsets["ApplicationSets<br/>platform, apps, crds"]
     end
 
     subgraph cluster["Kubernetes cluster"]
         platformres["Platform components<br/>including Argo CD"]
         appres["Applications"]
+        crdres["Shared CRDs"]
     end
 
     bootstrap ==>|"installs Argo CD,<br/>applies root"| root
@@ -31,8 +33,10 @@ flowchart LR
     root --> appsets
     platformdir -->|"scanned by"| appsets
     appsdir -->|"scanned by"| appsets
+    crdsdir -->|"scanned by"| appsets
     appsets ==>|"one Application<br/>per directory"| platformres
     appsets ==>|"one Application<br/>per directory"| appres
+    appsets ==>|"one Application<br/>per directory"| crdres
 
     style manual fill:#161b22,stroke:#f0883e,color:#f0883e,stroke-width:2px
     style repo fill:#161b22,stroke:#58a6ff,color:#58a6ff,stroke-width:2px
@@ -42,10 +46,12 @@ flowchart LR
     style bootstrapdir fill:#1a2332,stroke:#58a6ff,color:#e6edf3
     style platformdir fill:#1a2332,stroke:#58a6ff,color:#e6edf3
     style appsdir fill:#1a2332,stroke:#58a6ff,color:#e6edf3
+    style crdsdir fill:#1a2332,stroke:#58a6ff,color:#e6edf3
     style root fill:#241f33,stroke:#d2a8ff,color:#e6edf3
     style appsets fill:#241f33,stroke:#d2a8ff,color:#e6edf3
     style platformres fill:#1f2a1f,stroke:#3fb950,color:#e6edf3
     style appres fill:#1f2a1f,stroke:#3fb950,color:#e6edf3
+    style crdres fill:#1f2a1f,stroke:#3fb950,color:#e6edf3
 ```
 
 The `root` application watches `bootstrap/`, so changes to projects and ApplicationSets also go through Git. Argo CD manages itself through `platform/argocd/`, like any other platform component. That application takes over the Helm release installed by `make bootstrap`.
@@ -70,7 +76,7 @@ sequenceDiagram
 
 ## ApplicationSets
 
-An ApplicationSet is a template that creates Application resources. Each ApplicationSet scans a directory in this repository and creates one Application for each subdirectory. Adding a directory with `Chart.yaml` and `values.yaml` is enough to deploy something new.
+An ApplicationSet is a template that creates Application resources. Each ApplicationSet scans a directory in this repository and creates one Application for each subdirectory. Adding a directory with `Chart.yaml` and `values.yaml` to `platform/` or `apps/` is enough to deploy something new.
 
 ### Generated values
 
@@ -81,20 +87,34 @@ The directory `platform/argocd` produces these values:
 | `{{.path.basename}}` | `argocd` | Application name, namespace and Helm release name |
 | `{{.path.path}}` | `platform/argocd` | Path to the chart in the repository |
 
-Everything else in the template is the same for all applications, including automated sync with pruning, self-healing and retries.
+In `crds/`, the Application name gets the suffix `-crds`, so `crds/gateway-api` becomes `gateway-api-crds`. No namespace or release name is set.
+
+Everything else in a template is the same for all its applications, including automated sync with self-healing and retries.
 
 ### Differences
 
-| | `platform` | `apps` |
-|---|---|---|
-| Scans | `platform/*` | `apps/*` |
-| Project | `platform` | `apps` |
-| Removing a directory | Deletes the Application, keeps its resources | Deletes the Application and its resources |
+| | `platform` | `apps` | `crds` |
+|---|---|---|---|
+| Scans | `platform/*` | `apps/*` | `crds/*` |
+| Project | `platform` | `apps` | `platform` |
+| Build tool | Helm, enforced | Helm, enforced | Detected from the directory content |
+| Namespace | Directory name, created if missing | Directory name, created if missing | None |
+| Removing a file from a directory | Deletes its resources | Deletes its resources | Keeps its resources |
+| Removing a directory | Deletes the Application, keeps its resources | Deletes the Application and its resources | Deletes the Application, keeps its resources |
 
-There are two ApplicationSets for two reasons:
+There are three ApplicationSets for three reasons:
 
 - **Permissions:** the project is hardcoded in each ApplicationSet, so a directory cannot choose its own permissions.
 - **Deletion:** platform components are protected against accidental removal. Without this, removing `platform/argocd/` could delete Argo CD itself.
+- **Shared CRDs:** deleting a CRD deletes every resource of that kind, so `crds` never deletes anything. Its content is cluster-scoped, so it needs no namespace.
+
+## Shared CRDs
+
+CRDs follow their owner. A component's own CRDs are installed by its chart in `platform/`. CRDs for an API that no single component owns, such as Gateway API, get a directory in `crds/`.
+
+Each directory in `crds/` holds one `kustomization.yaml` that references the upstream manifests at a pinned Git tag. Kustomize is used only to fetch these manifests. Overlays and patches are not used.
+
+Removing a shared CRD from the cluster is a manual step, after its directory is removed from Git.
 
 ## Projects
 
@@ -109,7 +129,9 @@ The `root` application uses the built-in `default` project, because it creates t
 ## Constraints
 
 - The directory name must be a valid Kubernetes name, and unique across `platform/` and `apps/`.
-- Each directory gets a namespace with the same name.
+- Each directory in `platform/` and `apps/` gets a namespace with the same name.
+- A directory in `platform/` or `apps/` must be a Helm chart. Anything else fails to sync.
+- A directory in `crds/` holds a `kustomization.yaml` by convention. Argo CD detects the build tool there and does not enforce it.
 - Renaming a directory works as a removal followed by an addition. In `apps/`, the old resources are deleted.
 - Namespaces created by Argo CD are not removed with the application, for either ApplicationSet. An empty namespace stays until it is deleted by hand.
 - Manual changes to generated Applications are overwritten. Changes are made in Git.

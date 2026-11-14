@@ -1,5 +1,7 @@
 # 0004. Deploy with ApplicationSets and wrapper charts
 
+Superseded by [0008](0008-deploy-components-and-shared-crds-with-applicationsets.md)
+
 ## Date
 
 2026-11-05
