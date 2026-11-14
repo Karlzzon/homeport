@@ -37,10 +37,11 @@ Creates the cluster from nothing.
    ```bash
    make status
    kubectl get applications -n argocd
-   curl -i http://127.0.0.1/
    ```
 
-   All three nodes should be `Ready`, and all pods `Running` or `Completed`. The applications `root` and `argocd` should be `Synced` and `Healthy`. The `curl` command should return `404` from Traefik, because no routes exist yet.
+   All three nodes should be `Ready`, and all pods `Running` or `Completed`. The applications `root` and `argocd` should be `Synced` and `Healthy`.
+
+   Ports 80 and 443 do not answer yet. The Traefik bundled with k3s is disabled in `cluster/k3d.yaml`, and no replacement is installed.
 
 5. Optional: open the Argo CD web interface at <https://127.0.0.1:8080>. The certificate is self-signed. Log in as `admin` with the generated password.
 
@@ -60,7 +61,3 @@ Creates the cluster from nothing.
 | `make down` | Deletes the cluster. See the [teardown runbook](teardown.md). |
 
 `make bootstrap` downloads the Argo CD chart to `platform/argocd/charts/` and generates `Chart.lock`. Both are ignored by Git and can be deleted at any time. After a version change in `Chart.yaml`, delete `charts/` before running `make bootstrap` again.
-
-## Known behaviour
-
-The `helm-install-traefik` pod usually restarts once during startup, and the job then completes. No action is needed.

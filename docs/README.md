@@ -21,3 +21,4 @@ Significant decisions are recorded as Architecture Decision Records in [`adr/`](
 | [0004](adr/0004-deploy-with-applicationsets-and-wrapper-charts.md) | Deploy with ApplicationSets and wrapper charts |
 | [0005](adr/0005-render-manifests-on-demand.md) | Render manifests on demand |
 | [0006](adr/0006-use-make-as-task-runner.md) | Use Make as task runner |
+| [0007](adr/0007-pin-k3s-to-the-newest-commonly-supported-version.md) | Pin k3s to the newest commonly supported version |
